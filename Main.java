@@ -1,45 +1,49 @@
-package JCDZ2;
+package JCDZ9;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-        String[][] arrayPositive = {
-                {"1", "2", "3", "4"}, {"5", "6", "7", "8"}, {"1", "2", "3", "4"}, {"1", "2", "3", "4"}
-        };
-        String[][] arrayNegativeSize = {
-                {"1", "2", "3"}, {"5", "6", "7", "8"}, {"1", "2", "3", "4"}, {"1", "2", "3", "4"}
-        };
-        String[][] arrayNegativeData = {
-                {"1", "2", "3", "4"}, {"5", "6kk", "7", "8"}, {"1", "2", "3", "4"}, {"1", "2", "3", "4"}
-        };
-        try {
-            System.out.println(acceptArray(arrayNegativeData));
-        } catch (MyArraySizeException e) {
-            System.out.println("Длинна вашего массива не коректна");
-        } catch (MyArrayDataException e) {
-            System.out.println("Не корректные данные");
-            System.out.println("Ошибка в ячейке: " + e.i + "x" + e.j);
-        }
-    }
+        List<Student> students = new ArrayList<>();
+        students.add(new Student("Eva", Arrays.asList(new Course("English"), new Course("Math"),
+                new Course("Git"), new Course("Linux"), new Course("Java"))));
+        students.add(new Student("Igor", Arrays.asList(new Course("English"), new Course("Math"),
+                new Course("Git"), new Course("Linux"))));
+        students.add(new Student("Andrey", Arrays.asList(new Course("Math"),
+                new Course("Git"), new Course("Linux"), new Course("Java"))));
+        students.add(new Student("Ira", Arrays.asList(new Course("Math"),
+                new Course("Git"), new Course("Java"))));
+        students.add(new Student("Liza", Arrays.asList(new Course("English"), new Course("Git"),
+                new Course("Linux"), new Course("Java"))));
+        students.add(new Student("Ura", Arrays.asList(new Course("English"), new Course("Math"),
+                new Course("Git"), new Course("Linux"), new Course("Java"))));
 
+        //Написать функцию, принимающую список Student и возвращающую список уникальных курсов, на которые подписаны
+        // студенты.
 
-    public static int acceptArray(String[][] yourArray) throws MyArraySizeException, MyArrayDataException {
-        int total = 0;
-        if (yourArray.length != 4) {
-            throw new MyArraySizeException("Длинна вашего массива не коректна");
-        }
-        for (int i = 0; i < yourArray.length; i++) {
-            if (yourArray[i].length != 4) {
-                throw new MyArraySizeException("Длинна вашего массива не коректна");
-            }
-            for (int j = 0; j < yourArray[i].length; j++) {
-                try {
-                    total += Integer.parseInt(yourArray[i][j]);
-                } catch (NumberFormatException ex) {
-                    throw new MyArrayDataException(i, j);
-                }
-            }
-        }
-        return total;
-    }
-    }
+        students.stream()
+                .map(s -> s.getCourses())
+                .flatMap(f -> f.stream())
+                .collect(Collectors.toSet());
 
+        //Написать функцию, принимающую на вход список Student и возвращающую список из трех самых любознательных
+        // (любознательность определяется количеством курсов).
+
+        students.stream()
+                .sorted((s1, s2) -> s2.getCourses().size() - s1.getCourses().size())
+                .limit(2)
+                .collect(Collectors.toList());
+
+        //Написать функцию, принимающую на вход список Student и экземпляр Course, возвращающую список студентов,
+        // которые посещают этот курс.
+
+        Course course = new Course("Java");
+        students.stream()
+                .filter(s -> s.getCourses().contains(course))
+                .collect(Collectors.toList());
+
+    }
+}
